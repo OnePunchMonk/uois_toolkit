@@ -15,10 +15,9 @@ import numpy as np
 import pycocotools
 from pathlib import Path
 from ..config import cfg
-from .utils import (augmentation, blob)
-from ..utils.seed import set_seeds
 from torchvision import transforms
 from detectron2.structures import BoxMode
+from .utils import (augmentation, blob, set_seeds)
 import logging
 
 # Set up logging

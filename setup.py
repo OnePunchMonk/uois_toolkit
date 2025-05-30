@@ -21,12 +21,13 @@ setup(
         "numpy>=1.19.0",
         "scipy>=1.5.0",
         "pycocotools>=2.0.2",
-        "detectron2>=0.6",
+        "detectron2",
+        "open3d>=0.13.0",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.9",
 )
