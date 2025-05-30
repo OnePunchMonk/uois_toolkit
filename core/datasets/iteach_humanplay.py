@@ -12,7 +12,7 @@ import torch
 import numpy as np
 from pathlib import Path
 from .base import BaseUOISDataset
-from .utils import augmentation
+from ..utils import augmentation
 import logging
 
 # Set up logging
@@ -67,10 +67,10 @@ class iTeachHumanPlayDataset(BaseUOISDataset):
         depth = depth.squeeze()
 
         # Convert to XYZ using K of IRVLUTD fetch robot after ft sensor installation-calibration (as of May 29 2025)
-        fx = 527.8869068647631
-        fy = 524.7942507494529
-        cx = 230.2819198622499
-        cy = self.data_loading_params["img_height"] / 2
+        fx = 527.8869019
+        fy = 524.7942505
+        cx = 321.7148743
+        cy = 230.2819214
         h, w = depth.shape
         x = torch.arange(w, dtype=torch.float32).unsqueeze(0).repeat(h, 1)
         y = torch.arange(h, dtype=torch.float32).unsqueeze(1).repeat(1, w)
