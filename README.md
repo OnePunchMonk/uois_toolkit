@@ -3,6 +3,29 @@
 A toolkit for **Unseen Object Instance Segmentation (UOIS)**  
 
 ---
+## Setup and Install
+
+```bash
+git clone https://github.com/OnePunchMonk/uois_toolkit.git
+cd uois_toolkit
+pip install -e .
+```
+
+## Testing
+
+```bash
+python -m pytest test/test_datamodule.py -v --dataset_path tabletop=C:\path\to\tabletop --dataset_path ocid=C:\path\to\OCID-dataset --dataset_path osd=C:\path\to\OSD --dataset_path robot_pushing=C:\path\to\pushing_data --dataset_path iteach_humanplay=C:\path\to\humanplay-data
+```
+
+OR
+
+```bash
+!pytest test/testmodule.py --dataset_path "ocid=./datasets/ocid"
+```
+
+
+
+
 
 ## 📚 **Index**
 - [🧠 **uois\_toolkit**](#-uois_toolkit)
