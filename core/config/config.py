@@ -8,8 +8,6 @@
 
 # import numpy as np
 
-# import numpy as np
-
 # config = {
 #     'PIXEL_MEANS': np.array([102.9801, 115.9465, 122.7717]),  # BGR
 #     'INPUT': 'RGBD',

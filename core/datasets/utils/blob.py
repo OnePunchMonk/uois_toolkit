@@ -3,8 +3,6 @@
 # Please check the licenses of the respective works utilized here before using this script.
 # 🖋️ Jishnu Jaykumar Padalunkal (2025).
 #----------------------------------------------------------------------------------------------------
-# uois_toolkit/core/datasets/utils/blob.py
-
 import numpy as np
 import cv2
 
