@@ -20,7 +20,7 @@
 #         'robot_pushing': RobotPushingDataset,
 #         'tabletop': TabletopDataset
 #     }
-#     if dataset_name not in datasets:
+#     if dataset_name not in d aatasets:
 #         raise ValueError(f"Unknown dataset: {dataset_name}. Choose from {list(datasets.keys())}")
 #     return datasets[dataset_name](image_set=image_set, data_path=data_path, eval=eval, config=config)
 

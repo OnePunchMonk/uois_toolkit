@@ -136,7 +136,7 @@ The most reliable way to ensure everything is configured correctly is to run the
 Open your terminal and run the following command, replacing `/path/to/your/data/...` with the actual paths to your datasets:
 
 ```bash
-python -m pytest test/test_datamodule.py -v \
+python -m pytest test/test_datamodule.py -v --log-cli-level=INFO \
   --dataset_path tabletop=/path/to/your/data/tabletop \
   --dataset_path ocid=/path/to/your/data/ocid \
   --dataset_path osd=/path/to/your/data/osd \
