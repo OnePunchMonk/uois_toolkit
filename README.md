@@ -1,4 +1,3 @@
-
 # 🧠 **uois_toolkit**  
 A toolkit for **Unseen Object Instance Segmentation (UOIS)**  
 
@@ -35,6 +34,7 @@ OR
   - [🧪 **Testing Locally**](#-testing-locally)
   - [📤 **PyPI Publishing Steps 💡**](#-pypi-publishing-steps-)
   - [💻 **Usage Example**](#-usage-example)
+  - [⚙️ How to Run the Module](#-how-to-run-the-module)
 
 ---
 
@@ -115,4 +115,73 @@ INFO:uois_toolkit.core.datasets.robot_pushing:321 images for dataset robot_pushi
 INFO:uois_toolkit.core.datasets.robot_pushing:107 images for dataset robot_pushing_object_test
 INFO:uois_toolkit.core.datasets.osd:111 images for dataset osd_object_train
 INFO:uois_toolkit.core.datasets.osd:111 images for dataset osd_object_test
+```
+
+---
+
+## ⚙️ How to Run the Module
+
+This toolkit is designed to be validated and used through its testing suite and can be easily integrated into your own projects.
+
+### Prerequisites: Environment and Data
+
+Before running the module, ensure you have:
+1.  **Set up the environment**: Follow the instructions in the [**Setup**](#-setup) section to create a `conda` environment and install all dependencies.
+2.  **Downloaded the datasets**: Make sure you have downloaded the required datasets as described in the [**Datasets**](#-datasets) section and have noted their paths.
+
+### Method 1: Running the Full Test Suite (Recommended)
+
+The most reliable way to ensure everything is configured correctly is to run the built-in `pytest` suite. This will validate the dataloaders, augmentations, and metric calculations for each dataset.
+
+Open your terminal and run the following command, replacing `/path/to/your/data/...` with the actual paths to your datasets:
+
+```bash
+python -m pytest test/test_datamodule.py -v \
+  --dataset_path tabletop=/path/to/your/data/tabletop \
+  --dataset_path ocid=/path/to/your/data/ocid \
+  --dataset_path osd=/path/to/your/data/osd \
+  --dataset_path robot_pushing=/path/to/your/data/robot_pushing \
+  --dataset_path iteach_humanplay=/path/to/your/data/iteach_humanplay
+```
+
+**Command Breakdown:**
+- `python -m pytest`: Runs pytest as a module to ensure it uses the correct environment.
+- `test/test_datamodule.py`: Specifies the test file to run.
+- `-v`: Enables verbose mode, which provides more detailed output.
+- `--dataset_path <name>=<path>`: This is a crucial argument. You must provide the path for each dataset you wish to test.
+
+### Method 2: Example Usage in a Python Script
+
+You can also import and use the datamodule directly in your own code.
+
+```python
+from uois_toolkit import get_datamodule, cfg
+import pytorch_lightning as pl
+
+# 1. Specify the dataset name and path
+dataset_name = "tabletop"
+data_path = "/path/to/your/data/tabletop"
+
+# 2. Get the datamodule
+# You can customize the configuration by modifying the `cfg` object before this call
+data_module = get_datamodule(
+    dataset_name=dataset_name,
+    data_path=data_path,
+    batch_size=4,
+    num_workers=2,
+    config=cfg
+)
+
+# 3. You can now use this data_module with a PyTorch Lightning Trainer
+# model = YourLightningModel()
+# trainer = pl.Trainer(accelerator="auto")
+# trainer.fit(model, datamodule=data_module)
+
+# Or simply inspect a batch of data
+data_module.setup()
+train_loader = data_module.train_dataloader()
+batch = next(iter(train_loader))
+
+print(f"Successfully loaded a batch for the {dataset_name} dataset!")
+print("Image tensor shape:", batch["image_color"].shape)
 ```

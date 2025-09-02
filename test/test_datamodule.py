@@ -215,6 +215,15 @@ import pytest
 # Import the main entry point and utilities from your library
 from uois_toolkit import get_datamodule, cfg
 from uois_toolkit.core.datasets.utils import set_seeds
+from uois_toolkit.core.metrics import (
+    precision,
+    recall,
+    f1_score,
+    intersection_over_union,
+    iou_threshold,
+    compute_metrics,
+    get_available_metrics,
+)
 
 # --- Setup Logging ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -364,3 +373,112 @@ def _validate_augmentations(dataset_name, data_path):
     assert augmented_image.shape[2] == expected_size and augmented_image.shape[3] == expected_size, \
         f"SYN_CROP validation FAILED: Expected {expected_size}, got {augmented_image.shape[2:]}."
     logger.info(f"SYN_CROP validation PASSED.")
+
+@pytest.fixture(scope="module")
+def metric_test_data():
+    """Provides common data for metric tests."""
+    y_true = np.array([
+        [1, 1, 0],
+        [1, 1, 0],
+        [0, 0, 0]
+    ])
+    y_pred_perfect = np.copy(y_true)
+    y_pred_partial = np.array([
+        [1, 1, 1],
+        [1, 0, 0],
+        [0, 0, 0]
+    ])
+    y_pred_no_overlap = np.array([
+        [0, 0, 1],
+        [0, 0, 1],
+        [0, 0, 0]
+    ])
+    y_pred_empty = np.zeros_like(y_true)
+    
+    return {
+        "true": y_true,
+        "perfect": y_pred_perfect,
+        "partial": y_pred_partial,
+        "no_overlap": y_pred_no_overlap,
+        "empty": y_pred_empty,
+        "all_true": np.ones_like(y_true)
+    }
+
+# ---------------------------------------------------
+# Test Suite for Metrics
+# ---------------------------------------------------
+
+def test_precision(metric_test_data):
+    """Tests the precision metric with various scenarios."""
+    data = metric_test_data
+    assert precision(data["true"], data["perfect"]) == pytest.approx(1.0)
+    # tp=3, fp=1 -> precision = 3/4 = 0.75
+    assert precision(data["true"], data["partial"]) == pytest.approx(0.75)
+    assert precision(data["true"], data["no_overlap"]) == pytest.approx(0.0)
+    assert precision(data["true"], data["empty"]) == pytest.approx(0.0)
+    # Test case where prediction is all 1s
+    # tp=4, fp=5 -> precision = 4/9
+    assert precision(data["true"], data["all_true"]) == pytest.approx(4/9)
+
+def test_recall(metric_test_data):
+    """Tests the recall metric with various scenarios."""
+    data = metric_test_data
+    assert recall(data["true"], data["perfect"]) == pytest.approx(1.0)
+    # tp=3, fn=1 -> recall = 3/4 = 0.75
+    assert recall(data["true"], data["partial"]) == pytest.approx(0.75)
+    assert recall(data["true"], data["no_overlap"]) == pytest.approx(0.0)
+    assert recall(data["true"], data["empty"]) == pytest.approx(0.0)
+    # tp=4, fn=0 -> recall = 4/4 = 1.0
+    assert recall(data["true"], data["all_true"]) == pytest.approx(1.0)
+
+def test_f1_score(metric_test_data):
+    """Tests the F1-score metric."""
+    data = metric_test_data
+    assert f1_score(data["true"], data["perfect"]) == pytest.approx(1.0)
+    # p=0.75, r=0.75 -> f1 = 2 * (0.75 * 0.75) / (0.75 + 0.75) = 0.75
+    assert f1_score(data["true"], data["partial"]) == pytest.approx(0.75)
+    assert f1_score(data["true"], data["no_overlap"]) == pytest.approx(0.0)
+    # p=4/9, r=1.0 -> f1 = 2 * (4/9 * 1) / (4/9 + 1) = (8/9) / (13/9) = 8/13
+    assert f1_score(data["true"], data["all_true"]) == pytest.approx(8/13)
+
+def test_intersection_over_union(metric_test_data):
+    """Tests the IoU metric."""
+    data = metric_test_data
+    assert intersection_over_union(data["true"], data["perfect"]) == pytest.approx(1.0)
+    # intersection=3, union=5 -> iou = 3/5 = 0.6
+    assert intersection_over_union(data["true"], data["partial"]) == pytest.approx(0.6)
+    assert intersection_over_union(data["true"], data["no_overlap"]) == pytest.approx(0.0)
+    # intersection=4, union=9 -> iou = 4/9
+    assert intersection_over_union(data["true"], data["all_true"]) == pytest.approx(4/9)
+
+def test_iou_threshold(metric_test_data):
+    """Tests the IoU thresholding function."""
+    data = metric_test_data
+    assert iou_threshold(data["true"], data["perfect"], threshold=0.9) is True
+    assert iou_threshold(data["true"], data["partial"], threshold=0.5) is True
+    assert iou_threshold(data["true"], data["partial"], threshold=0.7) is False
+    assert iou_threshold(data["true"], data["no_overlap"], threshold=0.1) is False
+
+def test_compute_metrics(metric_test_data):
+    """Tests the main metric computation utility."""
+    data = metric_test_data
+    metrics_to_compute = ["precision", "iou", "iou_at_0.7"]
+    results = compute_metrics(data["true"], data["partial"], metrics_to_compute)
+
+    assert "precision" in results
+    assert "iou" in results
+    assert "iou_at_0.7" in results
+    assert results["precision"] == pytest.approx(0.75)
+    assert results["iou"] == pytest.approx(0.6)
+    assert results["iou_at_0.7"] is False
+
+    # Test for case-insensitivity and unknown metrics
+    with pytest.raises(ValueError, match="not recognized"):
+        compute_metrics(data["true"], data["partial"], ["Precision", "unknown_metric"])
+
+def test_get_available_metrics():
+    """Ensures the list of available metrics is correct."""
+    available = get_available_metrics()
+    expected = ['precision', 'recall', 'f1_score', 'iou', 'iou_at_0.7']
+    assert isinstance(available, list)
+    assert sorted(available) == sorted(expected)
