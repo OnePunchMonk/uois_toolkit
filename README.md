@@ -1,5 +1,6 @@
-# 🧠 **uois_toolkit**  
+#  **uois_toolkit**  
 A toolkit for **Unseen Object Instance Segmentation (UOIS)**  
+[![Project Status: Stable](https://img.shields.io/badge/status-stable-green.svg)](https://github.com/OnePunchMonk/uois_toolkit)
 
 ---
 ## Setup and Install
@@ -12,158 +13,87 @@ pip install -e .
 
 ## Testing
 
-```bash
-python -m pytest test/test_datamodule.py -v --dataset_path tabletop=C:\path\to\tabletop --dataset_path ocid=C:\path\to\OCID-dataset --dataset_path osd=C:\path\to\OSD --dataset_path robot_pushing=C:\path\to\pushing_data --dataset_path iteach_humanplay=C:\path\to\humanplay-data
-```
+#  uois_toolkit
 
-OR
+[![Sanity Check](https://github.com/OnePunchMonk/uois_toolkit/actions/workflows/sanity_check.yml/badge.svg)](https://github.com/OnePunchMonk/uois_toolkit/actions/workflows/sanity_check.yml)
 
-```bash
-!pytest test/testmodule.py --dataset_path "ocid=./datasets/ocid"
-```
-
-
-
-
-
-## 📚 **Index**
-- [🧠 **uois\_toolkit**](#-uois_toolkit)
-  - [📚 **Index**](#-index)
-  - [🚀 **Setup**](#-setup)
-  - [📦 **Datasets**](#-datasets)
-  - [🧪 **Testing Locally**](#-testing-locally)
-  - [📤 **PyPI Publishing Steps 💡**](#-pypi-publishing-steps-)
-  - [💻 **Usage Example**](#-usage-example)
-  - [⚙️ How to Run the Module](#-how-to-run-the-module)
+A PyTorch-based toolkit for loading and processing datasets for **Unseen Object Instance Segmentation (UOIS)**. This repository provides a standardized, easy-to-use interface for several popular UOIS datasets, simplifying the process of training and evaluating segmentation models.
 
 ---
 
-## 🚀 **Setup**
-```bash
-# Create a conda environment
-conda create -n uois-toolkit python=3.10
-conda activate uois-toolkit
+## Table of Contents
 
-# Set CUDA path (use your installed CUDA version)
-export CUDA_HOME=/usr/local/cuda-12.6
-
-# Install dependencies
-pip install torch torchvision opencv-python numpy scipy pycocotools
-pip install git+https://github.com/facebookresearch/detectron2@65184fc057d4fab080a98564f6b60fae0b94edc4
-```
+- [Installation](#installation)
+- [Supported Datasets](#supported-datasets)
+- [Usage Example](#usage-example)
+- [Testing](#testing)
+- [For Maintainers](#for-maintainers)
+- [License](#license)
 
 ---
 
-## 📦 **Datasets**
-- Download TOD, OCID, OSD, RobotPushing, and iTeach-HumanPlay datasets from [Box](https://utdallas.box.com/v/uois-datasets).
-- Copy `OSD-0.2/` to `OSD-0.2-depth/` folder.
-- Place all data in the `DATA/` directory.
+## Installation
 
-🔗 **iTeach-HumanPlay Dataset Links**:
-- **D5**: [Download](https://utdallas.box.com/v/iTeach-HumanPlay-D5)  
-- **D40**: [Download](https://utdallas.box.com/v/iTeach-HumanPlay-D40)  
-- **Test**: [Download](https://utdallas.box.com/v/iTeach-HumanPlay-Test)
+### Prerequisites
+- Python 3.9+
+- An environment manager like `conda` is recommended.
 
----
+### Steps
 
-## 🧪 **Testing Locally**
-```bash
-rm -rf build dist *egg*  # Clean previous builds
-pip install -e .         # Install in editable mode
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/OnePunchMonk/uois_toolkit.git
+    cd uois_toolkit
+    ```
 
----
-
-## 📤 **PyPI Publishing Steps 💡**
-<details>
-<summary>Click to expand</summary>
-
-```bash
-# Install build tools
-python -m pip install build twine
-
-# Clean previous builds
-rm -rf build/ dist/ *.egg-info
-
-# Build the distribution
-python -m build
-python setup.py sdist bdist_wheel  # Ensure version is updated in setup.py
-
-# Upload to PyPI (ensure you have your PyPI token configured)
-twine upload dist/*
-```
-
-</details>
+2.  **Install the package:**
+    Installing in editable mode (`-e`) allows you to modify the source code without reinstalling. The command will automatically handle all necessary dependencies listed in `pyproject.toml`.
+    ```bash
+    pip install -e .
+    ```
 
 ---
 
-## 💻 **Usage Example**
-```bash
-python test/test_datasets.py
-```
+## Supported Datasets
 
-If everything is working, you should see logs like:
-```
-INFO:uois_toolkit.core.datasets.iteach_humanplay:2859 images for dataset iteach_humanplay_object_train
-INFO:uois_toolkit.core.datasets.iteach_humanplay:11796 images for dataset iteach_humanplay_object_train
-INFO:uois_toolkit.core.datasets.iteach_humanplay:902 images for dataset iteach_humanplay_object_test
-INFO:uois_toolkit.core.datasets.ocid:2390 images for dataset ocid_object_train
-INFO:uois_toolkit.core.datasets.ocid:2390 images for dataset ocid_object_test
-INFO:uois_toolkit.core.datasets.tabletop:280000 images for dataset tabletop_object_train
-INFO:uois_toolkit.core.datasets.tabletop:28000 images for dataset tabletop_object_test
-INFO:uois_toolkit.core.datasets.robot_pushing:321 images for dataset robot_pushing_object_train
-INFO:uois_toolkit.core.datasets.robot_pushing:107 images for dataset robot_pushing_object_test
-INFO:uois_toolkit.core.datasets.osd:111 images for dataset osd_object_train
-INFO:uois_toolkit.core.datasets.osd:111 images for dataset osd_object_test
-```
+This toolkit provides dataloaders for the following datasets:
+
+- Tabletop Object Discovery (TOD)
+- OCID
+- OSD
+- Robot Pushing
+- iTeach-HumanPlay
+
+### Download Links
+
+- **Main Datasets (TOD, OCID, OSD, Robot Pushing)**:
+  - [**Download from Box**](https://utdallas.box.com/v/uois-datasets)
+
+- **iTeach-HumanPlay Dataset**:
+  - **D5**: [Download](https://utdallas.box.com/v/iTeach-HumanPlay-D5)
+  - **D40**: [Download](https://utdallas.box.com/v/iTeach-HumanPlay-D40)
+  - **Test**: [Download](https://utdallas.box.com/v/iTeach-HumanPlay-Test)
+
+### Directory Setup
+
+It is recommended to organize the downloaded datasets into a single `DATA/` directory for convenience, though you can specify the path to each dataset individually.
 
 ---
 
-## ⚙️ How to Run the Module
+## Usage Example
 
-This toolkit is designed to be validated and used through its testing suite and can be easily integrated into your own projects.
-
-### Prerequisites: Environment and Data
-
-Before running the module, ensure you have:
-1.  **Set up the environment**: Follow the instructions in the [**Setup**](#-setup) section to create a `conda` environment and install all dependencies.
-2.  **Downloaded the datasets**: Make sure you have downloaded the required datasets as described in the [**Datasets**](#-datasets) section and have noted their paths.
-
-### Method 1: Running the Full Test Suite (Recommended)
-
-The most reliable way to ensure everything is configured correctly is to run the built-in `pytest` suite. This will validate the dataloaders, augmentations, and metric calculations for each dataset.
-
-Open your terminal and run the following command, replacing `/path/to/your/data/...` with the actual paths to your datasets:
-
-```bash
-python -m pytest test/test_datamodule.py -v --log-cli-level=INFO \
-  --dataset_path tabletop=/path/to/your/data/tabletop \
-  --dataset_path ocid=/path/to/your/data/ocid \
-  --dataset_path osd=/path/to/your/data/osd \
-  --dataset_path robot_pushing=/path/to/your/data/robot_pushing \
-  --dataset_path iteach_humanplay=/path/to/your/data/iteach_humanplay
-```
-
-**Command Breakdown:**
-- `python -m pytest`: Runs pytest as a module to ensure it uses the correct environment.
-- `test/test_datamodule.py`: Specifies the test file to run.
-- `-v`: Enables verbose mode, which provides more detailed output.
-- `--dataset_path <name>=<path>`: This is a crucial argument. You must provide the path for each dataset you wish to test.
-
-### Method 2: Example Usage in a Python Script
-
-You can also import and use the datamodule directly in your own code.
+You can easily import the datamodule into your own projects. The example below demonstrates how to load the `tabletop` dataset using `pytorch-lightning`.
 
 ```python
 from uois_toolkit import get_datamodule, cfg
 import pytorch_lightning as pl
 
-# 1. Specify the dataset name and path
+# 1. Define the dataset name and its location
 dataset_name = "tabletop"
 data_path = "/path/to/your/data/tabletop"
 
-# 2. Get the datamodule
-# You can customize the configuration by modifying the `cfg` object before this call
+# 2. Get the datamodule instance
+# The default configuration can be customized by modifying the `cfg` object
 data_module = get_datamodule(
     dataset_name=dataset_name,
     data_path=data_path,
@@ -172,16 +102,73 @@ data_module = get_datamodule(
     config=cfg
 )
 
-# 3. You can now use this data_module with a PyTorch Lightning Trainer
+# 3. The datamodule is ready to be used with a PyTorch Lightning Trainer
 # model = YourLightningModel()
 # trainer = pl.Trainer(accelerator="auto")
 # trainer.fit(model, datamodule=data_module)
 
-# Or simply inspect a batch of data
+# Alternatively, you can inspect a data batch directly
 data_module.setup()
 train_loader = data_module.train_dataloader()
 batch = next(iter(train_loader))
 
-print(f"Successfully loaded a batch for the {dataset_name} dataset!")
+print(f"Successfully loaded a batch from the {dataset_name} dataset!")
 print("Image tensor shape:", batch["image_color"].shape)
 ```
+
+---
+
+## Testing
+
+### Local Validation
+
+The repository includes a `pytest` suite to verify that the dataloaders and processing pipelines are working correctly.
+
+To run the tests, you must provide the root paths to your downloaded datasets using the `--dataset_path` argument.
+
+```bash
+python -m pytest test/test_datamodule.py -v \
+  --dataset_path tabletop=/path/to/your/data/tabletop \
+  --dataset_path ocid=/path/to/your/data/ocid \
+  --dataset_path osd=/path/to/your/data/osd
+  # Add other dataset paths as needed
+```
+**Note**: You only need to provide paths for the datasets you wish to test.
+
+### Continuous Integration
+
+This repository uses **GitHub Actions** to perform automated sanity checks on every push and pull request to the `main` branch. This workflow ensures that:
+1. The package installs correctly.
+2. The code adheres to basic linting standards.
+3. All core modules remain importable.
+
+This automated process helps maintain code quality and prevents the introduction of breaking changes.
+
+---
+
+## For Maintainers
+
+<details>
+<summary>Click to expand for PyPI publishing instructions</summary>
+
+```bash
+# 1. Install build tools
+python -m pip install build twine
+
+# 2. Clean previous builds
+rm -rf build/ dist/ *.egg-info
+
+# 3. Build the distribution files
+python -m build
+
+# 4. Upload to PyPI (requires a configured PyPI token)
+twine upload dist/*
+```
+
+</details>
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.

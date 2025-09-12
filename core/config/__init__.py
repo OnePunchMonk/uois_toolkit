@@ -4,6 +4,4 @@
 # # 🖋️ Jishnu Jaykumar Padalunkal (2025).
 # #----------------------------------------------------------------------------------------------------
 
-# from .config import config as cfg
-
 from .config import cfg
