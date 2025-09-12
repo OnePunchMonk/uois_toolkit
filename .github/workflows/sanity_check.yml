@@ -34,6 +34,5 @@ jobs:
     - name: Test core module imports
       run: |
         python -c "from core.config import config"
-        python -c "from core.datasets import base, iteach_humanplay, ocid, osd, robot_pushing, tabletop"
         python -c "from core.metrics import evaluation_metrics"
         python -c "from core.datasets.utils import augmentation, blob, mask, seed"

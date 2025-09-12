@@ -1,19 +1,5 @@
 #  **uois_toolkit**  
 A toolkit for **Unseen Object Instance Segmentation (UOIS)**  
-[![Project Status: Stable](https://img.shields.io/badge/status-stable-green.svg)](https://github.com/OnePunchMonk/uois_toolkit)
-
----
-## Setup and Install
-
-```bash
-git clone https://github.com/OnePunchMonk/uois_toolkit.git
-cd uois_toolkit
-pip install -e .
-```
-
-## Testing
-
-#  uois_toolkit
 
 [![Sanity Check](https://github.com/OnePunchMonk/uois_toolkit/actions/workflows/sanity_check.yml/badge.svg)](https://github.com/OnePunchMonk/uois_toolkit/actions/workflows/sanity_check.yml)
 

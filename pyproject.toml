@@ -1,11 +1,8 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "uois_toolkit"
 version = "0.1.0"
 description = "A toolkit for loading Unseen Object Instance Segmentation (UOIS) datasets."
+readme = "README.md"
 authors = [
     { name = "Jishnu Jaykumar Padalunkal", email = "jishnu.p@utdallas.edu" },
     { name = "Avaya Aggarwal", email = "aggarwal.avaya27@gmail.com" },
@@ -32,10 +29,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-detectron2 = []  
+detectron2 = ["detectron2>=0.6"]
+
+[project.urls]
+Homepage = "https://github.com/OnePunchMonk/uois_toolkit"
+Issues = "https://github.com/OnePunchMonk/uois_toolkit/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
-
-
-
+exclude = ["test*"]
