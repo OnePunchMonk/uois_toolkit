@@ -1,5 +1,7 @@
 #  **uois_toolkit**  
+
 A toolkit for **Unseen Object Instance Segmentation (UOIS)**  
+![banner](banner.png)
 
 [![Sanity Check](https://github.com/OnePunchMonk/uois_toolkit/actions/workflows/sanity_check.yml/badge.svg)](https://github.com/OnePunchMonk/uois_toolkit/actions/workflows/sanity_check.yml)
 
@@ -37,6 +39,14 @@ A PyTorch-based toolkit for loading and processing datasets for **Unseen Object 
     ```bash
     pip install -e .
     ```
+
+**Note about detectron2**
+
+This project depends on `detectron2` for some dataset utilities and mask handling. `detectron2` includes C++ extensions and must be built for your platform — it cannot always be installed as a pure Python wheel. Please follow the official installation instructions in the Detectron2 meta-repository and install a version compatible with your PyTorch and CUDA (or CPU-only) environment before running the tests or using the datasets:
+
+- Detectron2 installation guide and wheels: https://github.com/facebookresearch/detectron2
+
+On many systems you can install a compatible CPU-only wheel using the prebuilt index, or build from source if needed. If you are running on CI, ensure the runner has the necessary build tools and compatible PyTorch version.
 
 ---
 

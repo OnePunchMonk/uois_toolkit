@@ -34,8 +34,8 @@ class BaseDataset(Dataset):
         self.data_loading_params = {
             'img_width': self.cfg.FLOW_WIDTH, 'img_height': self.cfg.FLOW_HEIGHT,
             'near': 0.01, 'far': 100, 'fov': 45,
-            'use_data_augmentation': self.cfg.TRAIN.CHROMATIC or self.cfg.TRAIN.ADD_NOISE,
-            'min_pixels': self.cfg.TRAIN.min_pixels, 'max_pixels': self.cfg.TRAIN.max_pixels,
+            'use_data_augmentation': self.cfg.TRAIN['CHROMATIC'] or self.cfg.TRAIN['ADD_NOISE'],
+            'min_pixels': self.cfg.TRAIN['min_pixels'], 'max_pixels': self.cfg.TRAIN['max_pixels'],
         }
         self._data_path = Path(data_path) if data_path else self._get_default_path()
 
@@ -66,12 +66,12 @@ class BaseDataset(Dataset):
 
     def _apply_augmentations(self, im, foreground_labels, xyz_img, meta_data=None):
         if not self.eval:
-            if self.cfg.TRAIN.SYN_CROP:
+            if self.cfg.TRAIN['SYN_CROP']:
                 im, foreground_labels, xyz_img = self._pad_crop_resize(im, foreground_labels, xyz_img)
-            if self.cfg.TRAIN.EMBEDDING_SAMPLING:
-                foreground_labels = self._sample_pixels(foreground_labels, self.cfg.TRAIN.EMBEDDING_SAMPLING_NUM)
-            if self.cfg.TRAIN.CHROMATIC and random.random() > 0.1: im = blob.chromatic_transform(im)
-            if self.cfg.TRAIN.ADD_NOISE and random.random() > 0.1: im = blob.add_noise(im)
+            if self.cfg.TRAIN['EMBEDDING_SAMPLING']:
+                foreground_labels = self._sample_pixels(foreground_labels, self.cfg.TRAIN['EMBEDDING_SAMPLING_NUM'])
+            if self.cfg.TRAIN['CHROMATIC'] and random.random() > 0.1: im = blob.chromatic_transform(im)
+            if self.cfg.TRAIN['ADD_NOISE'] and random.random() > 0.1: im = blob.add_noise(im)
             
         boxes, binary_masks, labels = self.process_label_to_annos(foreground_labels)
         
@@ -94,7 +94,7 @@ class BaseDataset(Dataset):
             else: x_min, x_max = cx - y_delta / 2, cx + y_delta / 2
             
             sidelength = x_max - x_min
-            padding = int(round(sidelength * random.uniform(self.cfg.TRAIN.min_padding_percentage, self.cfg.TRAIN.max_padding_percentage))) or 25
+            padding = int(round(sidelength * random.uniform(self.cfg.TRAIN['min_padding_percentage'], self.cfg.TRAIN['max_padding_percentage']))) or 25
             
             x_min = max(int(x_min - padding), 0)
             x_max = min(int(x_max + padding), W - 1)
@@ -107,7 +107,7 @@ class BaseDataset(Dataset):
             label_crop = label[y_min:y_max+1, x_min:x_max+1]
             depth_crop = depth[y_min:y_max+1, x_min:x_max+1] if depth is not None else None
 
-            s = self.cfg.TRAIN.SYN_CROP_SIZE
+            s = self.cfg.TRAIN['SYN_CROP_SIZE']
             img_crop = cv2.resize(img_crop, (s, s))
             label_crop = cv2.resize(label_crop, (s, s), interpolation=cv2.INTER_NEAREST)
             if depth_crop is not None:
@@ -117,7 +117,7 @@ class BaseDataset(Dataset):
         return img, label, depth
 
     def _sample_pixels(self, labels, num=1000):
-        labels_new = -1 * np.ones_like(labels)
+        labels_new = np.full_like(labels, -1, dtype=np.int32)
         K = np.max(labels)
         for i in range(K + 1):
             index = np.where(labels == i)

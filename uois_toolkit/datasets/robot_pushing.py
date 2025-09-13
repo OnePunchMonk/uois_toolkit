@@ -26,7 +26,7 @@ class RobotPushingDataset(BaseDataset):
     def __init__(self, image_set="train", data_path=None, eval=False, config=None):
         super().__init__(image_set, data_path, eval, config)
         self._name = f'robot_pushing_object_{image_set}'
-        data_path_suffix = 'training_set' if self.image_set == 'train' else 'test_set'
+        data_path_suffix = 'training' if self.image_set == 'train' else 'testing'
         self._data_path = self._data_path / data_path_suffix
         self.image_paths = self._list_dataset()
         logger.info(f'{len(self.image_paths)} images for dataset {self._name}')
@@ -35,7 +35,7 @@ class RobotPushingDataset(BaseDataset):
         return Path(os.path.expanduser("~")) / 'data' / 'pushing_data'
 
     def _list_dataset(self):
-        seqs = sorted(list(self._data_path.glob('*T*')))
+        seqs = sorted([p for p in self._data_path.glob('*') if p.is_dir()])
         image_paths = []
         for seq in seqs:
             paths = sorted(list((seq).glob('color*.jpg')))
@@ -76,7 +76,7 @@ class RobotPushingDataset(BaseDataset):
             mask_img = binary_masks[:, :, i]
             objs.append({
                 "bbox": boxes[i].tolist(), "bbox_mode": BoxMode.XYXY_ABS,
-                "segmentation": pycocotools_mask.encode(np.asfortranarray(mask_img)), "category_id": 1,
+                "segmentation": pycocotools_mask.encode(np.asfortranarray(mask_img.astype(np.uint8))), "category_id": 1,
             })
         record["annotations"] = objs
         return record

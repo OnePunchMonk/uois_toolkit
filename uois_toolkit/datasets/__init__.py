@@ -25,8 +25,38 @@ DATASET_MAPPING = {
 }
 
 def uois_collate_fn(batch):
+    """Collate function that filters None samples and handles variable-length fields.
+
+    - Filters out None samples produced by dataset failures.
+    - Uses default_collate for fixed-shape tensor fields.
+    - Keeps variable-length fields (like 'annotations') as lists.
+    """
     batch = [item for item in batch if item is not None]
-    return None if not batch else torch.utils.data.dataloader.default_collate(batch)
+    if not batch:
+        return None
+
+    # Collect keys and determine which are tensors (fixed-shape)
+    first = batch[0]
+    tensor_keys = []
+    list_keys = []
+    for k, v in first.items():
+        if isinstance(v, torch.Tensor):
+            tensor_keys.append(k)
+        else:
+            list_keys.append(k)
+
+    collated = {}
+    # Collate tensor fields using default_collate
+    if tensor_keys:
+        tensor_batch = [{k: b[k] for k in tensor_keys} for b in batch]
+        collated_tensors = torch.utils.data.dataloader.default_collate(tensor_batch)
+        collated.update(collated_tensors)
+
+    # For list/variable fields, collect into Python lists
+    for k in list_keys:
+        collated[k] = [b[k] for b in batch]
+
+    return collated
 
 class UOISDataModule(pl.LightningDataModule):
     def __init__(self, dataset_class, data_path, batch_size, num_workers, config=None):

@@ -24,29 +24,43 @@ def _get_stats(y_true: BinaryMask, y_pred: BinaryMask, smooth: float = 1e-6) -> 
 
 def precision(y_true: BinaryMask, y_pred: BinaryMask, smooth: float = 1e-6) -> float:
     """Calculates precision for binary masks."""
-    tp, fp, _, smooth_val = _get_stats(y_true, y_pred, smooth)
-    return (tp + smooth_val) / (tp + fp + smooth_val)
+    tp, fp, _, _ = _get_stats(y_true, y_pred, smooth)
+    denominator = tp + fp
+    if denominator == 0:
+        return 0.0
+    return float(tp) / float(denominator)
 
 def recall(y_true: BinaryMask, y_pred: BinaryMask, smooth: float = 1e-6) -> float:
     """Calculates recall for binary masks."""
-    tp, _, fn, smooth_val = _get_stats(y_true, y_pred, smooth)
-    return (tp + smooth_val) / (tp + fn + smooth_val)
+    tp, _, fn, _ = _get_stats(y_true, y_pred, smooth)
+    denominator = tp + fn
+    if denominator == 0:
+        return 0.0
+    return float(tp) / float(denominator)
 
 def f1_score(y_true: BinaryMask, y_pred: BinaryMask, smooth: float = 1e-6) -> float:
     """Calculates the F1-score for binary masks."""
-    tp, fp, fn, smooth_val = _get_stats(y_true, y_pred, smooth)
-    return (2 * tp + smooth_val) / (2 * tp + fp + fn + smooth_val)
+    tp, fp, fn, _ = _get_stats(y_true, y_pred, smooth)
+    if tp == 0 and (fp + fn) == 0:
+        return 0.0
+    precision_val = float(tp) / float(tp + fp) if (tp + fp) > 0 else 0.0
+    recall_val = float(tp) / float(tp + fn) if (tp + fn) > 0 else 0.0
+    if (precision_val + recall_val) == 0:
+        return 0.0
+    return 2.0 * (precision_val * recall_val) / (precision_val + recall_val)
 
 def intersection_over_union(y_true: BinaryMask, y_pred: BinaryMask, smooth: float = 1e-6) -> float:
     """Calculates Intersection over Union (IoU) for binary masks."""
-    tp, fp, fn, smooth_val = _get_stats(y_true, y_pred, smooth)
+    tp, fp, fn, _ = _get_stats(y_true, y_pred, smooth)
     union = tp + fp + fn
-    return (tp + smooth_val) / (union + smooth_val)
+    if union == 0:
+        return 0.0
+    return float(tp) / float(union)
 
 def iou_threshold(y_true: BinaryMask, y_pred: BinaryMask, threshold: float = 0.7) -> bool:
     """Checks if the IoU is above a certain threshold."""
     iou = intersection_over_union(y_true, y_pred)
-    return iou >= threshold
+    return True if iou >= threshold else False
 
 # --- Metric Registry ---
 # This dictionary maps string names to their respective functions,

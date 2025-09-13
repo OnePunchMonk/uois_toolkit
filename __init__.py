@@ -4,5 +4,5 @@
 # # 🖋️ Jishnu Jaykumar Padalunkal (2025).
 # # ----------------------------------------------------------------------------------------------------
 
-from .core.datasets import get_datamodule
-from .core.config import cfg
+from uois_toolkit.datasets import get_datamodule
+from uois_toolkit.config.config import cfg

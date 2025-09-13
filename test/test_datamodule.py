@@ -15,8 +15,8 @@ import pytest
 
 # Import the main entry point and utilities from your library
 from uois_toolkit import get_datamodule, cfg
-from uois_toolkit.core.datasets.utils import set_seeds
-from uois_toolkit.core.metrics import (
+from uois_toolkit.datasets.utils import set_seeds
+from uois_toolkit.metrics import (
     precision,
     recall,
     f1_score,
@@ -29,34 +29,6 @@ from uois_toolkit.core.metrics import (
 # --- Setup Logging ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
-# ---------------------------------------------------
-# Pytest Fixtures for Command-Line Path Configuration
-# ---------------------------------------------------
-
-def pytest_addoption(parser):
-    """Adds the --dataset_path option to the pytest command line."""
-    parser.addoption(
-        "--dataset_path",
-        action="append",
-        default=[],
-        help="Specify dataset paths in the format name=path (e.g., tabletop=/data/tabletop)",
-    )
-
-@pytest.fixture(scope="session")
-def dataset_paths(request):
-    """Parses the --dataset_path arguments and returns a dictionary."""
-    path_dict = {}
-    for arg in request.config.getoption("--dataset_path"):
-        try:
-            name, path = arg.split("=", 1)
-            if os.path.exists(path):
-                path_dict[name] = path
-            else:
-                logger.warning(f"Path for dataset '{name}' does not exist: {path}. It will be skipped.")
-        except ValueError:
-            pytest.fail(f"Invalid format for --dataset_path: '{arg}'. Use 'name=path'.")
-    return path_dict
 
 # ---------------------------------------------------
 # Dummy LightningModule for Testing

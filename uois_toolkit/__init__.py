@@ -10,6 +10,8 @@ from .datasets.ocid import OCIDDataset
 from .datasets.osd import OSDDataset
 from .datasets.robot_pushing import RobotPushingDataset
 from .datasets.tabletop import TabletopDataset
+from .datasets import get_datamodule
+from .config.config import cfg
 
 
 def get_dataset(
