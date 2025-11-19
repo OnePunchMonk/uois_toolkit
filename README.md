@@ -4,7 +4,7 @@ A toolkit for **Unseen Object Instance Segmentation (UOIS)**
 ![banner](banner.png)
 
 [![Sanity Check](https://github.com/OnePunchMonk/uois_toolkit/actions/workflows/sanity_check.yml/badge.svg)](https://github.com/OnePunchMonk/uois_toolkit/actions/workflows/sanity_check.yml)
-
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/uois-toolkit?period=total&units=ABBREVIATION&left_color=BLACK&right_color=RED&left_text=downloads)](https://pepy.tech/projects/uois-toolkit)
 A PyTorch-based toolkit for loading and processing datasets for **Unseen Object Instance Segmentation (UOIS)**. This repository provides a standardized, easy-to-use interface for several popular UOIS datasets, simplifying the process of training and evaluating segmentation models.
 
 ---
